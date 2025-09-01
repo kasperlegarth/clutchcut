@@ -15,8 +15,8 @@ import { ref, onMounted } from "vue";
 import HelloWorld from "./components/HelloWorld.vue";
 
 const preloadMessage = ref("");
-onMounted(() => {
+onMounted(async () => {
   // @ts-ignore
-  preloadMessage.value = window.clutchcut?.ping();
+  await window.clutchcut?.checkForUpdates();
 });
 </script>

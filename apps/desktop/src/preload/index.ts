@@ -1,5 +1,4 @@
-import { contextBridge } from "electron";
-
+import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("clutchcut", {
-  ping: () => "pong"
+  checkForUpdates: () => ipcRenderer.invoke("update:check")
 });

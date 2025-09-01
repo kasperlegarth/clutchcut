@@ -1,7 +1,10 @@
-import { app, BrowserWindow, dialog } from "electron";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import * as path from "path";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
+import { buildMenu } from "./menu";
+
+ipcMain.handle("update:check", () => autoUpdater.checkForUpdatesAndNotify());
 
 function setupAutoUpdater(win: BrowserWindow) {
   autoUpdater.logger = log;
@@ -48,6 +51,8 @@ function createWindow() {
   } else {
     win.loadFile(prodIndex);
   }
+
+  buildMenu(win); 
 
   if (app.isPackaged) setupAutoUpdater(win);
   return win;
