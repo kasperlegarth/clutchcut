@@ -12,6 +12,7 @@ const count = ref(0);
   <div class="p-4 border rounded-xl shadow-sm text-center">
     <p class="text-lg font-semibold">{{ msg }}</p>
     <Button
+      variant="secondary"
       @click="count++"
     >
       Klik mig ({{ count }})

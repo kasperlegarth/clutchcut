@@ -1,5 +1,6 @@
 AI/*
 apps/desktop/dist/*
+apps/desktop/release/*
 apps/desktop/dist-electron/*
 apps/desktop/node_modules/*
 

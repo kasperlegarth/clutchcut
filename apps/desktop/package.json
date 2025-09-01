@@ -1,6 +1,6 @@
 {
   "name": "clutchcut-desktop",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "description": "Clutch Cut – Desktop app til analyse af gameplay (Battlefield MVP)",
   "main": "dist-electron/main/index.js",
   "author": "Clutch Cut Team",
@@ -11,11 +11,15 @@
     "build:electron": "tsc -p tsconfig.electron.json",
     "build": "npm run build:ui && npm run build:electron",
     "preview": "vite preview",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "release:win": "rimraf release && electron-builder --win --publish always",
+    "release:beta": "rimraf release && electron-builder --win --publish always --prepackaged release --config.publish.channel=beta",
+    "release:all": "rimraf release && electron-builder -mwl --publish always"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "electron-log": "^5.4.3",
     "electron-updater": "^6.6.2",
     "lucide-vue-next": "^0.298.0",
     "pinia": "^2.1.7",
@@ -36,6 +40,7 @@
     "electron": "^30.5.1",
     "electron-builder": "^26.0.12",
     "nodemon": "^3.1.10",
+    "rimraf": "^5.0.7",
     "tailwindcss": "^4.1.12",
     "typescript": "^5.9.2",
     "vite": "^5.4.7",

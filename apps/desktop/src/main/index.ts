@@ -1,5 +1,32 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog } from "electron";
 import * as path from "path";
+import { autoUpdater } from "electron-updater";
+import log from "electron-log";
+
+function setupAutoUpdater(win: BrowserWindow) {
+  autoUpdater.logger = log;
+  (autoUpdater.logger as any).transports.file.level = "info";
+
+  // Hvis du vil teste prereleases (fx 0.2.0-beta.1):
+  // autoUpdater.allowPrerelease = true;
+
+  autoUpdater.on("checking-for-update", () => win.webContents.send("update:status", "checking"));
+  autoUpdater.on("update-available", () => win.webContents.send("update:status", "available"));
+  autoUpdater.on("update-not-available", () => win.webContents.send("update:status", "none"));
+  autoUpdater.on("error", (err) => log.error("[UPDATE] error:", err));
+  autoUpdater.on("download-progress", (p) => win.webContents.send("update:progress", p.percent));
+  autoUpdater.on("update-downloaded", async () => {
+    const res = await dialog.showMessageBox(win, {
+      type: "info",
+      buttons: ["Genstart nu", "Senere"],
+      title: "Opdatering klar",
+      message: "En ny version er downloadet. Vil du genstarte og installere?"
+    });
+    if (res.response === 0) autoUpdater.quitAndInstall();
+  });
+
+  autoUpdater.checkForUpdatesAndNotify();
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -7,8 +34,7 @@ function createWindow() {
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
-      contextIsolation: true,
-      devTools: true
+      contextIsolation: true
     }
   });
 
@@ -17,32 +43,19 @@ function createWindow() {
   const prodIndex = path.join(__dirname, "../../dist/index.html");
 
   if (isDev) {
-    console.log("[MAIN] DEV mode →", devUrl);
-    win.loadURL(devUrl).catch(err => console.error("[MAIN] loadURL(dev) failed:", err));
-    // Åbn devtools straks
+    win.loadURL(devUrl);
     win.webContents.openDevTools({ mode: "detach" });
-    // Og sørg for de også åbner efter første load
-    win.webContents.on("did-finish-load", () => {
-      if (!win.webContents.isDevToolsOpened()) {
-        win.webContents.openDevTools({ mode: "detach" });
-      }
-    });
   } else {
-    console.log("[MAIN] PROD mode →", prodIndex);
-    win.loadFile(prodIndex).catch(err => console.error("[MAIN] loadFile(prod) failed:", err));
+    win.loadFile(prodIndex);
   }
+
+  if (app.isPackaged) setupAutoUpdater(win);
+  return win;
 }
 
 app.whenReady().then(() => {
-  console.log("[APP] Ready (isPackaged =", app.isPackaged, ")");
   createWindow();
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
+  app.on("activate", () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
-});
-
-process.on("uncaughtException", (err) => console.error("[UNCAUGHT]", err));
+app.on("window-all-closed", () => { if (process.platform !== "darwin") app.quit(); });

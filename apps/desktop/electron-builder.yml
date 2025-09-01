@@ -7,10 +7,9 @@ directories:
   buildResources: build
 
 files:
-  - "dist/**"            # Vite build output
-  - "dist-electron/**"   # Transpiled Electron main/preload
+  - "dist/**"
+  - "dist-electron/**"
   - "package.json"
-  - "!**/*.map"
 
 asar: true
 
@@ -20,8 +19,7 @@ extraMetadata:
 win:
   target:
     - target: nsis
-      arch:
-        - x64
+      arch: [x64]
   icon: "build/icons/win/icon.ico"
 
 nsis:
@@ -32,37 +30,8 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: "Clutch Cut"
 
-mac:
-  target:
-    - dmg
-  category: "public.app-category.video"
-  icon: "build/icons/mac/icon.icns"
-  hardenedRuntime: false
-  entitlements: null
-  entitlementsInherit: null
-
-dmg:
-  background: null
-  iconSize: 128
-
-linux:
-  target:
-    - AppImage
-    - deb
-  category: "AudioVideo"
-  icon: "build/icons/png"
-
-protocols:
-  - name: "Clutch Cut"
-    schemes:
-      - clutchcut
-
-fileAssociations:
-  - ext: "clutchcut.json"
-    name: "Clutch Cut Analysis"
-    role: "Viewer"
-
 publish:
-  provider: "generic"
-  url: ""
-  publishAutoUpdate: false
+  - provider: github
+    owner: kasperlegarth
+    repo: clutchcut
+    releaseType: draft   # "draft" er tryggest; kan skiftes til "release" senere
