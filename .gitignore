@@ -1,2 +1,5 @@
 AI/*
 /apps/desktop/node_modules/*
+
+.vite
+*.log
