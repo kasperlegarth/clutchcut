@@ -3,3 +3,4 @@ AI/*
 
 .vite
 *.log
+apps/desktop/dist-electron/*
