@@ -13,6 +13,9 @@ files:
 
 asar: true
 
+asarUnpack:
+  - "**/ffprobe-static/**"
+
 extraMetadata:
   main: "dist-electron/main/index.js"
 

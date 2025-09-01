@@ -10,13 +10,20 @@
             <Label for="file">Select a file</Label>
             <Input @change="handleFilePick" id="file" type="file" />
           </div>
-          <div v-if="file">
+          <div v-if="meta && file" class="space-y-1.5">
+            <h4>Meta data</h4>
             <p>
                 File size:
                 {{ formatFileSize(file.size) }}
             </p>
             <p>
                 File type: {{ file.type }}
+            </p>
+            <p>
+                Frame rate: {{ meta.fps }}
+            </p>
+            <p>
+                Duration: {{ formatDuration(meta.durationSec) }}
             </p>
           </div>
         </div>
@@ -42,11 +49,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 const file = ref<File | null>(null);
+const meta = ref<{ durationSec: number; fps: number } | null>(null);
 
 const handleFilePick = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files) {
     file.value = target.files[0];
+    meta.value = await window.clutchcut.ffprobe(file.value.path);
   }
 };
 
@@ -60,5 +69,17 @@ function formatFileSize(size: number): string {
     unitIndex++;
   } while (s >= 1024 && unitIndex < units.length - 1);
   return `${s.toFixed(2)} ${units[unitIndex]}`;
+}
+
+function formatDuration(seconds: number): string {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  if (hrs > 0) {
+    return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+  } else {
+    return `${pad(mins)}:${pad(secs)}`;
+  }
 }
 </script>

@@ -22,6 +22,7 @@
     "clsx": "^2.1.1",
     "electron-log": "^5.4.3",
     "electron-updater": "^6.6.2",
+    "ffprobe-static": "^3.1.0",
     "lucide-vue-next": "^0.298.0",
     "pinia": "^2.1.7",
     "reka-ui": "^2.5.0",
