@@ -6,7 +6,7 @@
   "author": "Clutch Cut Team",
   "license": "MIT",
   "scripts": {
-     "dev": "concurrently -k -n VITE,TSC,ELEC -c blue,magenta,green \"vite dev --port 1337\" \"tsc -p tsconfig.electron.json -w\" \"cross-env NODE_ENV=development ELECTRON_ENABLE_LOGGING=1 ELECTRON_DISABLE_SECURITY_WARNINGS=1 wait-on tcp:1337 && electron .\"",
+    "dev": "concurrently -k -n VITE,TSC,ELEC -c blue,magenta,green \"vite dev --port 1337\" \"tsc -p tsconfig.electron.json -w\" \"cross-env NODE_ENV=development ELECTRON_ENABLE_LOGGING=1 ELECTRON_DISABLE_SECURITY_WARNINGS=1 nodemon --watch dist-electron --ext js --delay 300ms --exec electron .\"",
     "build:ui": "vite build",
     "build:electron": "tsc -p tsconfig.electron.json",
     "build": "npm run build:ui && npm run build:electron",
@@ -14,22 +14,28 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "lucide-vue-next": "^0.298.0",
     "pinia": "^2.1.7",
+    "reka-ui": "^2.5.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.12",
     "@types/node": "^24.3.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
     "cross-env": "^10.0.0",
     "electron": "^30.5.1",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.3",
+    "nodemon": "^3.1.10",
+    "tailwindcss": "^4.1.12",
     "typescript": "^5.9.2",
-    "vite": "^5.4.19",
+    "vite": "^5.4.7",
     "vite-plugin-vue-devtools": "^7.0.0",
     "wait-on": "^7.2.0"
   }

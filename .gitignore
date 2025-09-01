@@ -1,6 +1,7 @@
 AI/*
-/apps/desktop/node_modules/*
+apps/desktop/dist/*
+apps/desktop/dist-electron/*
+apps/desktop/node_modules/*
 
 .vite
 *.log
-apps/desktop/dist-electron/*
