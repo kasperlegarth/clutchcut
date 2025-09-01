@@ -1,0 +1,68 @@
+appId: com.clutchcut.app
+productName: Clutch Cut
+artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - "dist/**"            # Vite build output
+  - "dist-electron/**"   # Transpiled Electron main/preload
+  - "package.json"
+  - "!**/*.map"
+
+asar: true
+
+extraMetadata:
+  main: "dist-electron/main/index.js"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: "build/icons/win/icon.ico"
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "Clutch Cut"
+
+mac:
+  target:
+    - dmg
+  category: "public.app-category.video"
+  icon: "build/icons/mac/icon.icns"
+  hardenedRuntime: false
+  entitlements: null
+  entitlementsInherit: null
+
+dmg:
+  background: null
+  iconSize: 128
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: "AudioVideo"
+  icon: "build/icons/png"
+
+protocols:
+  - name: "Clutch Cut"
+    schemes:
+      - clutchcut
+
+fileAssociations:
+  - ext: "clutchcut.json"
+    name: "Clutch Cut Analysis"
+    role: "Viewer"
+
+publish:
+  provider: "generic"
+  url: ""
+  publishAutoUpdate: false
