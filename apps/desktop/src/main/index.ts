@@ -58,6 +58,15 @@ function createWindow() {
   return win;
 }
 
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) { app.quit(); } else {
+  app.on("second-instance", (_e, argv) => {
+    const [win] = BrowserWindow.getAllWindows();
+    if (win) { if (win.isMinimized()) win.restore(); win.focus(); }
+    // evt. håndter deep link/fil her senere
+  });
+}
+
 app.whenReady().then(() => {
   createWindow();
   app.on("activate", () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

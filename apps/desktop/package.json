@@ -1,6 +1,6 @@
 {
   "name": "clutchcut-desktop",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Clutch Cut – Desktop app til analyse af gameplay (Battlefield MVP)",
   "main": "dist-electron/main/index.js",
   "author": "Clutch Cut Team",
