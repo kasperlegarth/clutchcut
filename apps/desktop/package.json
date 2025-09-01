@@ -16,6 +16,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "electron-updater": "^6.6.2",
     "lucide-vue-next": "^0.298.0",
     "pinia": "^2.1.7",
     "reka-ui": "^2.5.0",
@@ -33,6 +34,7 @@
     "concurrently": "^8.2.2",
     "cross-env": "^10.0.0",
     "electron": "^30.5.1",
+    "electron-builder": "^26.0.12",
     "nodemon": "^3.1.10",
     "tailwindcss": "^4.1.12",
     "typescript": "^5.9.2",
