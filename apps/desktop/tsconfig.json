@@ -1,5 +1,4 @@
 {
-  "extends": "@tsconfig/vue/tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -14,8 +13,9 @@
     "paths": {
       "@/*": ["src/renderer/*"]
     },
-    "types": ["vite/client"]
+    "types": ["vite/client", "node"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
-  "include": ["src/renderer/**/*", "env.d.ts"],
+  "include": ["src/renderer/**/*", "env.d.ts", "index.html"],
   "exclude": ["node_modules", "dist", "dist-electron"]
 }
