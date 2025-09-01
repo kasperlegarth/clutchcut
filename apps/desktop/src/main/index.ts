@@ -3,6 +3,7 @@ import * as path from "path";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 import { buildMenu } from "./menu";
+import { ffprobeJson } from "./ffprobe";
 
 ipcMain.handle("update:check", () => autoUpdater.checkForUpdatesAndNotify());
 
@@ -66,6 +67,16 @@ if (!gotLock) { app.quit(); } else {
     // evt. håndter deep link/fil her senere
   });
 }
+
+ipcMain.handle("ffprobe:meta", async (_e, { path }) => {
+  const j = await ffprobeJson(path);
+  const vStream = j.streams.find((s:any)=> s.codec_type === "video");
+  const fps = vStream?.r_frame_rate ? eval(vStream.r_frame_rate) : 0;
+  return {
+    durationSec: Number(j.format.duration || 0),
+    fps
+  };
+});
 
 app.whenReady().then(() => {
   createWindow();

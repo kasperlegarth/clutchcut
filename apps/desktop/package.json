@@ -17,6 +17,7 @@
     "release:all": "rimraf release && electron-builder -mwl --publish always"
   },
   "dependencies": {
+    "@vueuse/core": "^13.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "electron-log": "^5.4.3",
