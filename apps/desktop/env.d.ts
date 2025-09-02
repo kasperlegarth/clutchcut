@@ -10,6 +10,7 @@ declare global {
   interface Window {
     clutchcut: {
       pickFile: (filters?: any)=>Promise<any>;
+      toCcFileUrl: (absPath: string) => string;
       ffprobe: (path: string)=>Promise<any>;
       startAnalysis: (path: string)=>Promise<any>;
       cancelAnalysis: ()=>Promise<void>;

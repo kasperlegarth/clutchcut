@@ -1,9 +1,11 @@
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, protocol, session } from "electron";
 import * as path from "path";
+import { lookup as mimeLookup } from "mime-types";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 import { buildMenu } from "./menu";
 import { ffprobeJson } from "./ffprobe";
+import { fileURLToPath } from "node:url";
 
 ipcMain.handle("update:check", () => autoUpdater.checkForUpdatesAndNotify());
 
@@ -78,8 +80,47 @@ ipcMain.handle("ffprobe:meta", async (_e, { path }) => {
   };
 });
 
+protocol.registerSchemesAsPrivileged([{
+  scheme: "cc-file",
+  privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true }
+}]);
+
+function normalizeCcFileUrl(raw: string): string {
+  let u = raw;
+
+  // Sørg for "cc-file:///" (tre skråstreger)
+  u = u.replace(/^cc-file:\/(?!\/)/i, "cc-file:///");   // cc-file:/C:/... -> cc-file:///C:/...
+  u = u.replace(/^cc-file:\/\//i, "cc-file:///");       // cc-file://C:/... -> cc-file:///C:/...
+
+  // Fix case: drevbogstav uden kolon efter tre skråstreger:
+  // cc-file:///c/Users/...  ELLER  cc-file://c/Users/...  ->  cc-file:///C:/Users/...
+  u = u.replace(/^cc-file:\/{2,3}([a-zA-Z])\//, (_m, d: string) => `cc-file:///${d.toUpperCase()}:\/`);
+
+  return u;
+}
+
+function registerCcFileProtocol() {
+  protocol.registerFileProtocol("cc-file", (request, callback) => {
+    try {
+      const normalized = normalizeCcFileUrl(request.url);
+
+      // Byt schema til file: og lad WHATWG URL håndtere encoding
+      const fileUrl = new URL(normalized.replace(/^cc-file:/i, "file:"));
+      const absPath = fileURLToPath(fileUrl); // <- korrekt Windows-sti (C:\...)
+
+      const mimeType = mimeLookup(absPath) || "application/octet-stream";
+
+      callback({ path: absPath, mimeType });
+    } catch (e) {
+      console.error("[cc-file] error for", request.url, e);
+      callback({ error: -6 });
+    }
+  });
+}
+
 app.whenReady().then(() => {
-  createWindow();
+  registerCcFileProtocol();
+  const win = createWindow();
   app.on("activate", () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
 

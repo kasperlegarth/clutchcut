@@ -1,5 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
+    <p>Filepath: {{ props.filePath }}</p>
+    <p>Src : {{ srcUrl }}</p>
     <video
       ref="videoEl"
       :src="srcUrl"
@@ -25,7 +27,6 @@
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted, onBeforeUnmount } from "vue";
-import { toFileUrl } from "@/lib/fileUrl";
 
 const props = defineProps<{
   filePath: string | null
@@ -44,10 +45,8 @@ const segmentActive = computed(() => segStart.value != null && segEnd.value != n
 // Når fil ændres → opdatér src
 watch(() => props.filePath, (p) => {
   if (!p) { srcUrl.value = undefined; return; }
-  srcUrl.value = toFileUrl(p);
-  // nulstil segment/tilstand
-  segStart.value = segEnd.value = null;
-  isPlaying.value = false;
+  // @ts-ignore – vinduet er blevet udvidet af preload
+  srcUrl.value = window.clutchcut.toCcFileUrl(p);
 });
 
 function onLoaded() {

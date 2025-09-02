@@ -16,6 +16,6 @@
     "types": ["vite/client", "node"],
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
-  "include": ["src/renderer/**/*", "env.d.ts", "index.html"],
+  "include": ["src/renderer/**/*", "env.d.ts", "index.html", "src/types/**/*"],
   "exclude": ["node_modules", "dist", "dist-electron"]
 }

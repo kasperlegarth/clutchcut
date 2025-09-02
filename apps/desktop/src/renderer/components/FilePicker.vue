@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -48,13 +48,21 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-const file = ref<File | null>(null);
+const props = defineProps<{ modelValue: File | null }>();
+const emit = defineEmits();
+
+const file = ref<File | null>(props.modelValue ?? null);
 const meta = ref<{ durationSec: number; fps: number } | null>(null);
+
+watch(() => props.modelValue, (newVal) => {
+  file.value = newVal;
+});
 
 const handleFilePick = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files) {
     file.value = target.files[0];
+    emit("update:modelValue", file.value);
     meta.value = await window.clutchcut.ffprobe(file.value.path);
   }
 };
