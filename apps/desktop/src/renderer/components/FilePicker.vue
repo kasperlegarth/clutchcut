@@ -29,7 +29,7 @@
         </div>
       </CardContent>
       <CardFooter>
-        <Button>Analyse</Button>
+        <Button @click="emit('start')">Analyse</Button>
       </CardFooter>
     </Card>
 </template>
@@ -59,12 +59,13 @@ watch(() => props.modelValue, (newVal) => {
 });
 
 const handleFilePick = async (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files) {
-    file.value = target.files[0];
-    emit("update:modelValue", file.value);
-    meta.value = await window.clutchcut.ffprobe(file.value.path);
-  }
+  const input = event.target as HTMLInputElement;
+  const f = input.files?.[0];
+  if (!f) return;
+
+  const filePath = (f as any).path as string | undefined;
+  if (!filePath) { console.warn("Ingen .path – kører du uden Electron?"); return; }
+  emit("update:modelValue", filePath);
 };
 
 function formatFileSize(size: number): string {

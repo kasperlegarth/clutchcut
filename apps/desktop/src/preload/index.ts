@@ -18,8 +18,11 @@ contextBridge.exposeInMainWorld("clutchcut", {
   checkForUpdates: () => ipcRenderer.invoke("update:check"),
   pickFile: (filters?: any) => ipcRenderer.invoke("file:pick", { filters }),
   ffprobe: (path:string) => ipcRenderer.invoke("ffprobe:meta", { path }),
-  startAnalysis: (path: string) => ipcRenderer.invoke("analysis:start", { path }),
+  startAnalysis: (opts: any) => ipcRenderer.invoke("analysis:start", opts),
   cancelAnalysis: () => ipcRenderer.invoke("analysis:cancel"),
-  onProgress: (cb: (p: any)=>void) => ipcRenderer.on("analysis:progress", (_e, p) => cb(p)),
-  toCcFileUrl
+  onAnalysisProgress: (cb: (p: any)=>void) => ipcRenderer.on("analysis:progress", (_e, p) => cb(p)),
+  onAnalysisDebugFrame: (cb:(p:{idx:number;t:number;path:string})=>void) => ipcRenderer.on("analysis:debugFrame", (_e,p)=>cb(p)),
+  onAnalysisFramesKept: (cb:(p:{dir:string})=>void) => ipcRenderer.on("analysis:framesKept", (_e,p)=>cb(p)),
+  openPath: (p:string)=>ipcRenderer.invoke("fs:openPath",p),
+  toCcFileUrl,
 });

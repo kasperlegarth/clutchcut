@@ -15,6 +15,7 @@ asar: true
 
 asarUnpack:
   - "**/ffprobe-static/**"
+  - "**/ffmpeg-static/**"
 
 extraMetadata:
   main: "dist-electron/main/index.js"

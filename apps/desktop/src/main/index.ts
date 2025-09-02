@@ -6,6 +6,10 @@ import log from "electron-log";
 import { buildMenu } from "./menu";
 import { ffprobeJson } from "./ffprobe";
 import { fileURLToPath } from "node:url";
+import { Analyzer } from "./analysis";
+import { shell } from "electron";
+
+let analyzer: Analyzer | null = null;
 
 ipcMain.handle("update:check", () => autoUpdater.checkForUpdatesAndNotify());
 
@@ -36,8 +40,8 @@ function setupAutoUpdater(win: BrowserWindow) {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1600,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
       contextIsolation: true
@@ -117,6 +121,24 @@ function registerCcFileProtocol() {
     }
   });
 }
+
+ipcMain.handle("analysis:start", async (e, opts) => {
+    console.log("[analysis:start] opts:", opts);           // 👈 se hele objektet
+  console.log("[analysis:start] typeof filePath:", typeof opts?.filePath, "value:", opts?.filePath);
+  const win = BrowserWindow.fromWebContents(e.sender)!;
+  const filePath = opts?.filePath;
+  if (!filePath || typeof filePath !== "string") {
+    throw new Error("analysis:start: filePath mangler eller er ikke en streng");
+  }
+  analyzer?.cancel();
+  analyzer = new Analyzer();
+  return await analyzer.run(win, { ...opts, filePath });
+});
+
+ipcMain.handle("analysis:cancel", () => { analyzer?.cancel(); analyzer = null; });
+
+// Til debug: åbne mappe
+ipcMain.handle("fs:openPath", async (_e, p: string) => shell.openPath(p));
 
 app.whenReady().then(() => {
   registerCcFileProtocol();
