@@ -1,7 +1,5 @@
 <template>
   <div class="flex flex-col gap-2">
-    <p>Filepath: {{ props.filePath }}</p>
-    <p>Src : {{ srcUrl }}</p>
     <video
       ref="videoEl"
       :src="srcUrl"
