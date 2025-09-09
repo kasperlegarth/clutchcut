@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { Settings } from "@/components/modules/settings"
 import { Confirm } from "@/components/modules/confirm"
 import { Processing } from "@/components/modules/processing"
+import { Events } from "@/components/modules/events"
 
 const settingsModel = ref({
     projectName: '',
@@ -100,8 +101,20 @@ function gotoStep(nextStep: number) {
             <div v-else-if="step === 3" key="step3">
                 <transition name="fade-right" appear>
                     <div>
-                        <Processing :progress="processingProgress" :eta="eta" />
+                        <Processing :progress="processingProgress" :eta="eta ?? undefined" />
                     </div>
+                </transition>
+            </div>
+            <div v-else-if="step === 4" key="step4">
+                <transition name="fade-right" appear>
+                    <Events :video-file="settingsModel.footage" :events="[
+                        { type: 'kill', timestamp: 284 },
+                        { type: 'revive', timestamp: 350 },
+                        { type: 'kill', timestamp: 480 },
+                        { type: 'kill', timestamp: 483 },
+                        { type: 'kill', timestamp: 489 },
+                        { type: 'squad revive', timestamp: 495 }
+                    ]" />
                 </transition>
             </div>
         </transition>
