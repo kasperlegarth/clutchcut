@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { Settings } from "@/components/modules/settings"
 import { Confirm } from "@/components/modules/confirm"
 import { Processing } from "@/components/modules/processing"
@@ -77,6 +77,18 @@ function gotoStep(nextStep: number) {
     }
 }
 
+const pingReply = ref<string | null>(null);
+
+onMounted(async () => {
+  // Kør kun hvis preload har eksponeret API'et (dvs. i Electron)
+  if (typeof window !== 'undefined' && 'cc' in window && window.cc?.ping) {
+    pingReply.value = await window.cc.ping();
+    console.log('window.cc.ping() =>', pingReply.value);
+  } else {
+    console.warn('window.cc ikke tilgængelig (kører sandsynligvis i browser).');
+  }
+});
+
 </script>
 
 <template>
@@ -118,6 +130,9 @@ function gotoStep(nextStep: number) {
                 </transition>
             </div>
         </transition>
+    </div>
+    <div v-if="pingReply" class="fixed bottom-2 right-2 text-xs opacity-60">
+        cc.ping: {{ pingReply }}
     </div>
 </template>
 

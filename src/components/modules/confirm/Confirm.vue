@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { defineProps, computed, defineEmits } from 'vue'
+import { computed } from 'vue'
 import { formatDate } from '@/lib/utils'
 
 interface SettingsModel {

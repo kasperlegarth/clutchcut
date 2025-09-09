@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 
-import { defineEmits, defineProps, reactive, watch } from 'vue'
+import { reactive, watch } from 'vue'
 
 const emit = defineEmits(['next', 'update:model'])
 
