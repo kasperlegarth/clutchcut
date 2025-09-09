@@ -1,39 +1,31 @@
-// electron/main.ts
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path';
-import { existsSync } from 'node:fs';
+import { dirname } from 'node:path'
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-function resolvePreloadPath() {
-  // Prod / "bundlet" sti (hvor __dirname normalt er dist-electron)
-  const prodPreload = join(__dirname, 'preload.js');
-  // Dev: vite-plugin-electron outputter hertil
-  const devPreload = join(process.cwd(), 'dist-electron', 'preload.js');
-  return existsSync(prodPreload) ? prodPreload : devPreload;
-}
 
 let win: BrowserWindow | null = null
 
-const createWindow = async () => {
+async function createWindow() {
+  // vigtig ændring: .cjs
+  const preload = fileURLToPath(new URL('./preload.cjs', import.meta.url))
+
   win = new BrowserWindow({
     width: 1280,
     height: 800,
     webPreferences: {
-      preload: resolvePreloadPath(),
+      preload,
       contextIsolation: true,
       nodeIntegration: false,
+      // sandbox: false // (default) – lad den bare være
     },
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    await win.loadURL(process.env.VITE_DEV_SERVER_URL);
-    win.webContents.openDevTools();
+    await win.loadURL(process.env.VITE_DEV_SERVER_URL)
+    win.webContents.openDevTools()
   } else {
-    // når du bygger renderer (vite build), vil index.html ligge i dist/
-    await win.loadFile(join(process.cwd(), 'dist', 'index.html'));
+    await win.loadFile('../dist/index.html')
   }
 }
 

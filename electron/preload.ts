@@ -1,5 +1,4 @@
-// electron/preload.ts
-import { contextBridge, ipcRenderer } from 'electron';
+const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('cc', {
   ping: () => ipcRenderer.invoke('cc:ping'),
